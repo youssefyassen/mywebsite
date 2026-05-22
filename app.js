@@ -8,10 +8,11 @@ const filterSelect=document.getElementById("filterSelect");
 
 
 let tasks=[];
+let originalTasks = [];
 
-fetch("../data/tasks.json")
+fetch("tasks.json")
     .then(response=> response.json())
-    .then(data=>{tasks=data;  renderTasks(tasks);});
+    .then(data=>{tasks=data; originalTasks = [...data];  renderTasks(tasks);});
 
     addTaskBtn.addEventListener(
         "click",
@@ -25,6 +26,7 @@ fetch("../data/tasks.json")
 
             };
             tasks.push(newTask);
+            originalTasks.push(newTask);
             renderTasks(tasks);
 
             tasktitle.value="";
@@ -50,15 +52,11 @@ fetch("../data/tasks.json")
                 <button class="deleteBtn">Delete</button>`;
 
 
-                taskCard
-                    .querySelector(".completeBtn")
-                    .addEventListener(
-                        "click",
-                        function(){
-                            tasks.splice(index,1);
-                            renderTasks(tasks);
-                        }
-                    );
+                // ✅ صح
+taskCard.querySelector(".completeBtn").addEventListener("click", function(){
+    tasks[index].completed = true;
+    renderTasks(tasks);
+});
                     taskcontainer
                         .appendChild(taskCard);
 
@@ -69,9 +67,9 @@ fetch("../data/tasks.json")
         "input",
         function(){
             const searchtext=searchinput.value.toLowerCase();
-            const filteredtasks=tasks.filter(function(task){
-                return task.title.toLowerCase().includes(searchtext)
-            });
+                const filteredtasks = originalTasks.filter(function(task) { // ✅ ابحث في الأصلية
+        return task.title.toLowerCase().includes(searchtext);
+    });
             renderTasks(filteredtasks);
         }
     );
@@ -79,18 +77,16 @@ fetch("../data/tasks.json")
         "change",
         function(){
             const selected=filterSelect.value;
-            if(selected==="all"){
-                renderTasks(tasks);
+            if(selected==="All"){
+                renderTasks(originalTasks);
             }else if(
                 selected==="completed"
 
             ){
-                const completedTasks=tasks.filter(task=>task.completed);
-                renderTasks(completedTasks);
+                renderTasks(originalTasks.filter(task => task.completed)); 
 
             }else{
-                const pendingtasks=tasks.filter(task=>!task.completed);
-                renderTasks(pendingtasks);
+                renderTasks(originalTasks.filter(task => !task.completed));
             }
 
 

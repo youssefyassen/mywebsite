@@ -81,12 +81,15 @@ button{
     display:flex;
     flex-direction:column;
     gap:15px;
+    color:red;
 }
 .task-card h3{
     margin-bottom:10px;
+    color:red;
 }
 .task-card p{
     margin-bottom:8px;
+    color:red;
 }
 .completed{
     text-decoration:line-through;
